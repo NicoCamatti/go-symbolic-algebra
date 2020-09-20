@@ -43,6 +43,10 @@ type Constant struct {
 	value float64
 }
 
+func (c *Constant) GetName() string {
+	return c.name
+}
+
 func (c *Constant) Evaluate() float64 {
 	return c.value
 }

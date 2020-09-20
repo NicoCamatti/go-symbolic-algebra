@@ -7,5 +7,15 @@ type node struct {
 }
 
 func (n *node) FunctionOf(v *Variable) bool {
-	return n.left.FunctionOf(v) || n.right.FunctionOf(v)
+	leftIsNil := n.left == nil
+	rightIsNil := n.right == nil
+	if !leftIsNil && !rightIsNil {
+		return n.left.FunctionOf(v) || n.right.FunctionOf(v)
+	} else if !leftIsNil {
+		return n.left.FunctionOf(v)
+	} else if !rightIsNil {
+		return n.right.FunctionOf(v)
+	} else {
+		return false
+	}
 }

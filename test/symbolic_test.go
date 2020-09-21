@@ -214,7 +214,7 @@ func TestDiffWithAdd(t *testing.T) {
 		x,
 		symb.GetConstant(symb.CONSTANT_ONE),
 	)
-	expr := y.Diff(x).ToString()
+	expr := y.Diff(x).String()
 	if expr != "1" {
 		t.Error("Expected 1 for derivative, got", expr)
 	}
@@ -227,7 +227,7 @@ func TestDiffWithSub(t *testing.T) {
 		symb.GetConstant(symb.CONSTANT_ONE),
 		x,
 	)
-	expr := y.Diff(x).ToString()
+	expr := y.Diff(x).String()
 	if expr != "(-1 * 1)" {
 		t.Error("Expected (-1 * 1) for derivative, got", expr)
 	}
@@ -240,7 +240,7 @@ func TestDiffWithMultiply(t *testing.T) {
 		symb.GetConstant(symb.CONSTANT_PI),
 		x,
 	)
-	expr := y.Diff(x).ToString()
+	expr := y.Diff(x).String()
 	if expr != "(pi * 1)" {
 		t.Error("Expected (pi * 1) for derivative, got", expr)
 	}
@@ -253,7 +253,7 @@ func TestDiffWithDivide(t *testing.T) {
 		symb.GetConstant(symb.CONSTANT_ONE),
 		x,
 	)
-	expr := y.Diff(x).ToString()
+	expr := y.Diff(x).String()
 	if expr != "(((-1 * 1) * 1) / (x * x))" {
 		t.Error("Expected (((-1 * 1) * 1) / (x * x)) for derivative, got", expr)
 	}

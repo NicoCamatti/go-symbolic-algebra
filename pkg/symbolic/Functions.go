@@ -69,8 +69,8 @@ func (p *pow) Diff(v *Variable) Evaluatable {
 	}
 }
 
-func (p *pow) ToString() string {
-	return "(" + p.left.ToString() + " ^ " + p.right.ToString() + ")"
+func (p *pow) String() string {
+	return "(" + p.left.String() + " ^ " + p.right.String() + ")"
 }
 
 type ln struct {
@@ -102,8 +102,8 @@ func (l *ln) Diff(v *Variable) Evaluatable {
 	}
 }
 
-func (l *ln) ToString() string {
-	return "ln(" + l.left.ToString() + ")"
+func (l *ln) String() string {
+	return "ln(" + l.left.String() + ")"
 }
 
 type sin struct {
@@ -131,8 +131,8 @@ func (s *sin) Diff(v *Variable) Evaluatable {
 	}
 }
 
-func (s *sin) ToString() string {
-	return "sin(" + s.left.ToString() + ")"
+func (s *sin) String() string {
+	return "sin(" + s.left.String() + ")"
 }
 
 type cos struct {
@@ -163,6 +163,6 @@ func (c *cos) Diff(v *Variable) Evaluatable {
 	}
 }
 
-func (c *cos) ToString() string {
-	return "cos(" + c.left.ToString() + ")"
+func (c *cos) String() string {
+	return "cos(" + c.left.String() + ")"
 }

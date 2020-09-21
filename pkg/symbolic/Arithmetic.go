@@ -29,8 +29,8 @@ func (a *add) Diff(v *Variable) Evaluatable {
 	}
 }
 
-func (a *add) ToString() string {
-	return "(" + a.left.ToString() + " + " + a.right.ToString() + ")"
+func (a *add) String() string {
+	return "(" + a.left.String() + " + " + a.right.String() + ")"
 }
 
 // sub operation node
@@ -62,8 +62,8 @@ func (s *sub) Diff(v *Variable) Evaluatable {
 	}
 }
 
-func (s *sub) ToString() string {
-	return "(" + s.left.ToString() + " - " + s.right.ToString() + ")"
+func (s *sub) String() string {
+	return "(" + s.left.String() + " - " + s.right.String() + ")"
 }
 
 // multiply operation node
@@ -98,8 +98,8 @@ func (m *multiply) Diff(v *Variable) Evaluatable {
 	}
 }
 
-func (m *multiply) ToString() string {
-	return "(" + m.left.ToString() + " * " + m.right.ToString() + ")"
+func (m *multiply) String() string {
+	return "(" + m.left.String() + " * " + m.right.String() + ")"
 }
 
 // divide operation Node
@@ -148,6 +148,6 @@ func (d *divide) Diff(v *Variable) Evaluatable {
 	}
 }
 
-func (d *divide) ToString() string {
-	return "(" + d.left.ToString() + " / " + d.right.ToString() + ")"
+func (d *divide) String() string {
+	return "(" + d.left.String() + " / " + d.right.String() + ")"
 }

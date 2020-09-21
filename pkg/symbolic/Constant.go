@@ -61,6 +61,6 @@ func (c *Constant) Diff(v *Variable) Evaluatable {
 	return GetConstant(CONSTANT_ZERO)
 }
 
-func (c *Constant) ToString() string {
+func (c *Constant) String() string {
 	return c.name
 }

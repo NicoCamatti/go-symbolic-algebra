@@ -156,7 +156,7 @@ func TestSetValue(t *testing.T) {
 }
 
 func TestGetConstant(t *testing.T) {
-	x := symb.GetConstant(symb.CONSTANT_PI)
+	x := symb.GetConstant(symb.ConstantPi)
 	got := x.Evaluate()
 	if got != math.Pi {
 		t.Error("Wrong value for Pi:", x.Evaluate())
@@ -212,7 +212,7 @@ func TestDiffWithAdd(t *testing.T) {
 	// y = x + 1
 	y := symb.NodeAdd(
 		x,
-		symb.GetConstant(symb.CONSTANT_ONE),
+		symb.GetConstant(symb.ConstantOne),
 	)
 	expr := y.Diff(x).String()
 	if expr != "1" {
@@ -224,7 +224,7 @@ func TestDiffWithSub(t *testing.T) {
 	x := symb.CreateVariable("x")
 	// y = 1 - x
 	y := symb.NodeSub(
-		symb.GetConstant(symb.CONSTANT_ONE),
+		symb.GetConstant(symb.ConstantOne),
 		x,
 	)
 	expr := y.Diff(x).String()
@@ -237,7 +237,7 @@ func TestDiffWithMultiply(t *testing.T) {
 	x := symb.CreateVariable("x")
 	// y = pi * x
 	y := symb.NodeMultiply(
-		symb.GetConstant(symb.CONSTANT_PI),
+		symb.GetConstant(symb.ConstantPi),
 		x,
 	)
 	expr := y.Diff(x).String()
@@ -250,7 +250,7 @@ func TestDiffWithDivide(t *testing.T) {
 	x := symb.CreateVariable("x")
 	// y = 1 / x
 	y := symb.NodeDivide(
-		symb.GetConstant(symb.CONSTANT_ONE),
+		symb.GetConstant(symb.ConstantOne),
 		x,
 	)
 	expr := y.Diff(x).String()

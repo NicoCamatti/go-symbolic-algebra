@@ -50,7 +50,7 @@ func (p *pow) Diff(v *Variable) Evaluatable {
 				p.right,
 				NodePow(
 					p.left,
-					NodeSub(p.right, GetConstant(CONSTANT_ONE)),
+					NodeSub(p.right, GetConstant(ConstantOne)),
 				),
 			),
 			p.left.Diff(v),
@@ -65,7 +65,7 @@ func (p *pow) Diff(v *Variable) Evaluatable {
 			p.right.Diff(v),
 		)
 	} else {
-		return GetConstant(CONSTANT_ZERO)
+		return GetConstant(ConstantZero)
 	}
 }
 
@@ -94,11 +94,11 @@ func (l *ln) Diff(v *Variable) Evaluatable {
 	isFunc := l.left.FunctionOf(v)
 	if isFunc {
 		return NodeMultiply(
-			NodeDivide(GetConstant(CONSTANT_ONE), l.left),
+			NodeDivide(GetConstant(ConstantOne), l.left),
 			l.left.Diff(v),
 		)
 	} else {
-		return GetConstant(CONSTANT_ZERO)
+		return GetConstant(ConstantZero)
 	}
 }
 
@@ -127,7 +127,7 @@ func (s *sin) Diff(v *Variable) Evaluatable {
 			s.left.Diff(v),
 		)
 	} else {
-		return GetConstant(CONSTANT_ZERO)
+		return GetConstant(ConstantZero)
 	}
 }
 
@@ -153,13 +153,13 @@ func (c *cos) Diff(v *Variable) Evaluatable {
 	if isFunc {
 		return NodeMultiply(
 			NodeMultiply(
-				GetConstant(CONSTANT_MINUS_ONE),
+				GetConstant(ConstantMinusOne),
 				NodeSin(c.left),
 			),
 			c.left.Diff(v),
 		)
 	} else {
-		return GetConstant(CONSTANT_ZERO)
+		return GetConstant(ConstantZero)
 	}
 }
 

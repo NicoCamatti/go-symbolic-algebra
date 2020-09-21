@@ -25,7 +25,7 @@ func (a *add) Diff(v *Variable) Evaluatable {
 	} else if rightIsFunc {
 		return a.right.Diff(v)
 	} else {
-		return GetConstant(CONSTANT_ZERO)
+		return GetConstant(ConstantZero)
 	}
 }
 
@@ -56,9 +56,9 @@ func (s *sub) Diff(v *Variable) Evaluatable {
 	} else if leftIsFunc {
 		return s.left.Diff(v)
 	} else if rightIsFunc {
-		return NodeMultiply(GetConstant(CONSTANT_MINUS_ONE), s.right.Diff(v))
+		return NodeMultiply(GetConstant(ConstantMinusOne), s.right.Diff(v))
 	} else {
-		return GetConstant(CONSTANT_ZERO)
+		return GetConstant(ConstantZero)
 	}
 }
 
@@ -94,7 +94,7 @@ func (m *multiply) Diff(v *Variable) Evaluatable {
 	} else if rightIsFunc {
 		return NodeMultiply(m.left, m.right.Diff(v))
 	} else {
-		return GetConstant(CONSTANT_ZERO)
+		return GetConstant(ConstantZero)
 	}
 }
 
@@ -115,7 +115,7 @@ func NodeDivide(left, right Evaluatable) Evaluatable {
 
 func (d *divide) Evaluate() float64 {
 	denominator := d.right.Evaluate()
-	if denominator == GetConstant(CONSTANT_ZERO).Evaluate() {
+	if denominator == GetConstant(ConstantZero).Evaluate() {
 		panic("Division by zero occured!")
 	} else {
 		return d.left.Evaluate() / denominator
@@ -138,13 +138,13 @@ func (d *divide) Diff(v *Variable) Evaluatable {
 	} else if rightIsFunc {
 		return NodeDivide(
 			NodeMultiply(
-				NodeMultiply(GetConstant(CONSTANT_MINUS_ONE), d.left),
+				NodeMultiply(GetConstant(ConstantMinusOne), d.left),
 				d.right.Diff(v),
 			),
 			NodeMultiply(d.right, d.right),
 		)
 	} else {
-		return GetConstant(CONSTANT_ZERO)
+		return GetConstant(ConstantZero)
 	}
 }
 

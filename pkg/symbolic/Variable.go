@@ -23,8 +23,8 @@ func (this *Variable) FunctionOf(v *Variable) bool {
 // Returns 1.0 if FunctionOf is true 0.0 otherwise
 func (this *Variable) Diff(v *Variable) Evaluatable {
 	if this.FunctionOf(v) {
-		return GetConstant(CONSTANT_ONE)
+		return GetConstant(ConstantOne)
 	} else {
-		return GetConstant(CONSTANT_ZERO)
+		return GetConstant(ConstantZero)
 	}
 }

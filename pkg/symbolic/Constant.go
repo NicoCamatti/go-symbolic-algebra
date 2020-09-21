@@ -5,26 +5,26 @@ import (
 )
 
 const (
-	CONSTANT_ZERO      string = "0"
-	CONSTANT_ONE       string = "1"
-	CONSTANT_MINUS_ONE string = "-1"
-	CONSTANT_E         string = "e"
-	CONSTANT_PI        string = "pi"
+	ConstantZero     string = "0"
+	ConstantOne      string = "1"
+	ConstantMinusOne string = "-1"
+	ConstantE        string = "e"
+	ConstantPi       string = "pi"
 )
 
 // Gets a constant from the given input string. Only supports the already defined const strings, otherwise panic
 func GetConstant(c string) *Constant {
 	var rConst Constant
 	switch c {
-	case CONSTANT_ZERO:
+	case ConstantZero:
 		rConst = Constant{name: c, value: 0.0}
-	case CONSTANT_ONE:
+	case ConstantOne:
 		rConst = Constant{name: c, value: 1.0}
-	case CONSTANT_MINUS_ONE:
+	case ConstantMinusOne:
 		rConst = Constant{name: c, value: -1.0}
-	case CONSTANT_E:
+	case ConstantE:
 		rConst = Constant{name: c, value: math.E}
-	case CONSTANT_PI:
+	case ConstantPi:
 		rConst = Constant{name: c, value: math.Pi}
 	default:
 		panic("Unknown constant")
@@ -58,7 +58,7 @@ func (c *Constant) FunctionOf(v *Variable) bool {
 
 // Automatically returns 0.0 if got to constant leaf node
 func (c *Constant) Diff(v *Variable) Evaluatable {
-	return GetConstant(CONSTANT_ZERO)
+	return GetConstant(ConstantZero)
 }
 
 func (c *Constant) String() string {

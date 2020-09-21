@@ -6,7 +6,7 @@ type add struct {
 }
 
 // Returns a Add Node given the left and right operands: left + rights
-func NodeAdd(left, right Evaluatable) *add {
+func NodeAdd(left, right Evaluatable) Evaluatable {
 	parent := node{left: left, right: right}
 	return &add{parent}
 }
@@ -39,7 +39,7 @@ type sub struct {
 }
 
 // Returns a Sub Node given the left and right operands: left - right
-func NodeSub(left, right Evaluatable) *sub {
+func NodeSub(left, right Evaluatable) Evaluatable {
 	parent := node{left: left, right: right}
 	return &sub{parent}
 }
@@ -72,7 +72,7 @@ type multiply struct {
 }
 
 // Returns a Multiply Node given the left and right operands: left * right
-func NodeMultiply(left, right Evaluatable) *multiply {
+func NodeMultiply(left, right Evaluatable) Evaluatable {
 	parent := node{left: left, right: right}
 	return &multiply{parent}
 }
@@ -108,7 +108,7 @@ type divide struct {
 }
 
 // Returns a Divide Node given the left and right operands: left / right
-func NodeDivide(left, right Evaluatable) *divide {
+func NodeDivide(left, right Evaluatable) Evaluatable {
 	parent := node{left: left, right: right}
 	return &divide{parent}
 }

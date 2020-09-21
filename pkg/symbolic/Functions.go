@@ -8,7 +8,7 @@ type pow struct {
 	node
 }
 
-func NodePow(left, right Evaluatable) *pow {
+func NodePow(left, right Evaluatable) Evaluatable {
 	parent := node{left: left, right: right}
 	return &pow{parent}
 }
@@ -77,7 +77,7 @@ type ln struct {
 	node
 }
 
-func NodeLn(left Evaluatable) *ln {
+func NodeLn(left Evaluatable) Evaluatable {
 	parent := node{left: left, right: nil}
 	return &ln{parent}
 }
@@ -110,7 +110,7 @@ type sin struct {
 	node
 }
 
-func NodeSin(left Evaluatable) *sin {
+func NodeSin(left Evaluatable) Evaluatable {
 	parent := node{left: left, right: nil}
 	return &sin{parent}
 }
@@ -139,7 +139,7 @@ type cos struct {
 	node
 }
 
-func NodeCos(left Evaluatable) *cos {
+func NodeCos(left Evaluatable) Evaluatable {
 	parent := node{left: left, right: nil}
 	return &cos{parent}
 }

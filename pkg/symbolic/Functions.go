@@ -105,3 +105,64 @@ func (l *ln) Diff(v *Variable) Evaluatable {
 func (l *ln) ToString() string {
 	return "ln(" + l.left.ToString() + ")"
 }
+
+type sin struct {
+	node
+}
+
+func NodeSin(left Evaluatable) *sin {
+	parent := node{left: left, right: nil}
+	return &sin{parent}
+}
+
+func (s *sin) Evaluate() float64 {
+	return math.Sin(s.left.Evaluate())
+}
+
+func (s *sin) Diff(v *Variable) Evaluatable {
+	isFunc := s.left.FunctionOf(v)
+	if isFunc {
+		return NodeMultiply(
+			NodeCos(s.left),
+			s.left.Diff(v),
+		)
+	} else {
+		return GetConstant(CONSTANT_ZERO)
+	}
+}
+
+func (s *sin) ToString() string {
+	return "sin(" + s.left.ToString() + ")"
+}
+
+type cos struct {
+	node
+}
+
+func NodeCos(left Evaluatable) *cos {
+	parent := node{left: left, right: nil}
+	return &cos{parent}
+}
+
+func (c *cos) Evaluate() float64 {
+	return math.Cos(c.left.Evaluate())
+}
+
+func (c *cos) Diff(v *Variable) Evaluatable {
+	isFunc := c.left.FunctionOf(v)
+	if isFunc {
+		return NodeMultiply(
+			NodeMultiply(
+				GetConstant(CONSTANT_MINUS_ONE),
+				NodeSin(c.left),
+			),
+			c.left.Diff(v),
+		)
+	} else {
+		return GetConstant(CONSTANT_ZERO)
+	}
+}
+
+func (c *cos) ToString() string {
+	return "cos(" + c.left.ToString() + ")"
+}

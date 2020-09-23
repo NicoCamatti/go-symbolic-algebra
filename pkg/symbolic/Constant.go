@@ -1,9 +1,11 @@
 package symbolic
 
 import (
+	"fmt"
 	"math"
 )
 
+// A constant pool of exported string names that refer to a constant numeric
 const (
 	ConstantZero     string = "0"
 	ConstantOne      string = "1"
@@ -12,29 +14,37 @@ const (
 	ConstantPi       string = "pi"
 )
 
+// A pool of Constants
+var constantPool = map[string]Constant{
+	ConstantZero:     {ConstantZero, 0.0},
+	ConstantOne:      {ConstantOne, 1.0},
+	ConstantMinusOne: {ConstantMinusOne, -1.0},
+	ConstantE:        {ConstantE, math.E},
+	ConstantPi:       {ConstantPi, math.Pi},
+}
+
 // Gets a constant from the given input string. Only supports the already defined const strings, otherwise panic
 func GetConstant(c string) *Constant {
 	var rConst Constant
-	switch c {
-	case ConstantZero:
-		rConst = Constant{name: c, value: 0.0}
-	case ConstantOne:
-		rConst = Constant{name: c, value: 1.0}
-	case ConstantMinusOne:
-		rConst = Constant{name: c, value: -1.0}
-	case ConstantE:
-		rConst = Constant{name: c, value: math.E}
-	case ConstantPi:
-		rConst = Constant{name: c, value: math.Pi}
-	default:
-		panic("Unknown constant")
+	rConst, ok := constantPool[c]
+	if ok {
+		return &rConst
 	}
-	return &rConst
+	panic("Unknown constant")
 }
 
-// Get a new constant from the given name and value
-func GetCustomConstant(c string, v float64) *Constant {
-	return &Constant{name: c, value: v}
+// Get a constant from the given name and value
+func GetConstantValue(v float64) (rConst *Constant) {
+	name := fmt.Sprintf("%g", v) // Creates a name for this constant v
+	defer func() {
+		if r := recover(); r != nil {
+			// If panic add the new constant to the pool and return it:
+			rConst = &Constant{name: name, value: v}
+			constantPool[name] = *rConst
+		}
+	}()
+	rConst = GetConstant(name) // May panic if not mapped constant
+	return
 }
 
 // A Constant value float64

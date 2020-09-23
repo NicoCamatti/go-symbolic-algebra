@@ -163,15 +163,15 @@ func TestGetConstant(t *testing.T) {
 	}
 }
 
-func TestGetCustomConstant(t *testing.T) {
-	x := symb.GetCustomConstant("my_const", 35.0)
+func TestGetConstantValue(t *testing.T) {
+	x := symb.GetConstantValue(35.2)
 	got_name := x.GetName()
-	if got_name != "my_const" {
-		t.Error("Wrong name for constant. Expected my_const, got", got_name)
+	if got_name != "35.2" {
+		t.Error("Wrong name for constant. Expected 35.2, got", got_name)
 	}
 	got_value := x.Evaluate()
-	if got_value != 35.0 {
-		t.Error("Wrong value for constant. Expected 35.0, got", got_value)
+	if got_value != 35.2 {
+		t.Error("Wrong value for constant. Expected 35.2, got", got_value)
 	}
 }
 
@@ -179,10 +179,10 @@ func TestFunctionOf(t *testing.T) {
 	x := symb.CreateVariable("x")
 	y := symb.NodeAdd(
 		symb.NodeMultiply(
-			symb.GetCustomConstant("2", 2.0),
+			symb.GetConstantValue(2.0),
 			x,
 		),
-		symb.GetCustomConstant("3", 3.0),
+		symb.GetConstantValue(3.0),
 	)
 	got := y.FunctionOf(x)
 	if !got {
@@ -192,18 +192,18 @@ func TestFunctionOf(t *testing.T) {
 
 func TestFunctionOfWithConstantSameName(t *testing.T) {
 	x := symb.CreateVariable("x")
-	z := symb.CreateVariable("z")
+	e := symb.CreateVariable("e")
 	y := symb.NodeAdd(
 		symb.NodeMultiply(
-			symb.GetCustomConstant("2", 2.0),
+			symb.GetConstantValue(2.0),
 			x,
 		),
 		// Conflicts with variable "z", but code should know the difference
-		symb.GetCustomConstant("z", 3.0),
+		symb.GetConstant(symb.ConstantE),
 	)
-	got := y.FunctionOf(z)
+	got := y.FunctionOf(e)
 	if got {
-		t.Error("y should not be function of variable z")
+		t.Error("y should not be function of variable e")
 	}
 }
 
@@ -377,5 +377,63 @@ func TestNodeCos(t *testing.T) {
 	got = cos.Evaluate()
 	if math.Abs(got-1.0) > 1e-10 {
 		t.Error("Expected 0.0, got", got)
+	}
+}
+
+func TestDiffWithPow(t *testing.T) {
+	x := symb.CreateVariable("x")
+	two := symb.GetConstantValue(2.0)
+
+	// d(x^2)/dx = 2x:
+	x2 := symb.NodePow(x, two)
+	expr := x2.Diff(x).String()
+	if expr != "((2 * (x ^ (2 - 1))) * 1)" {
+		t.Error("Expected ((2 * (x ^ (2 - 1))) * 1), got", expr)
+	}
+
+	// d(x^x)/dx = full formula:
+	xx := symb.NodePow(x, x)
+	expr = xx.Diff(x).String()
+	if expr != "((((x * (x ^ x)) / x) * 1) + (((x ^ x) * ln(x)) * 1))" {
+		t.Error("Expected ((((x * (x ^ x)) / x) * 1) + (((x ^ x) * ln(x)) * 1)), got", expr)
+	}
+}
+
+func TestDiffWithLn(t *testing.T) {
+	x := symb.CreateVariable("x")
+	two := symb.GetConstantValue(2.0)
+	ln := symb.NodeLn(
+		symb.NodeMultiply(two, x),
+	)
+
+	expr := ln.Diff(x).String()
+	if expr != "((1 / (2 * x)) * (2 * 1))" {
+		t.Error("Expected ((1 / (2 * x)) * (2 * 1)), got", expr)
+	}
+}
+
+func TestDiffWithSin(t *testing.T) {
+	x := symb.CreateVariable("x")
+	two := symb.GetConstantValue(2.0)
+	sin := symb.NodeSin(
+		symb.NodeMultiply(two, x),
+	)
+
+	expr := sin.Diff(x).String()
+	if expr != "(cos((2 * x)) * (2 * 1))" {
+		t.Error("Expected (cos((2 * x)) * (2 * 1)), got", expr)
+	}
+}
+
+func TestDiffWithCos(t *testing.T) {
+	x := symb.CreateVariable("x")
+	two := symb.GetConstantValue(2.0)
+	cos := symb.NodeCos(
+		symb.NodeMultiply(two, x),
+	)
+
+	expr := cos.Diff(x).String()
+	if expr != "((-1 * sin((2 * x))) * (2 * 1))" {
+		t.Error("Expected ((-1 * sin((2 * x))) * (2 * 1)), got", expr)
 	}
 }

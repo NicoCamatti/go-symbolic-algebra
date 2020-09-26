@@ -190,6 +190,23 @@ func TestFunctionOf(t *testing.T) {
 	}
 }
 
+func TestIsConstant(t *testing.T) {
+	x := symb.CreateVariable("x")
+	zero := symb.GetConstant(symb.ConstantZero)
+
+	function := symb.NodeAdd(x, zero)
+	constant := symb.NodeSin(zero)
+
+	got := function.IsConstant()
+	if got {
+		t.Error("Expected function", function, "not to be constant")
+	}
+	got = constant.IsConstant()
+	if !got {
+		t.Error("Expected constant", constant, "to be constant")
+	}
+}
+
 func TestFunctionOfWithConstantSameName(t *testing.T) {
 	x := symb.CreateVariable("x")
 	e := symb.CreateVariable("e")
@@ -436,4 +453,106 @@ func TestDiffWithCos(t *testing.T) {
 	if expr != "((-1 * sin((2 * x))) * (2 * 1))" {
 		t.Error("Expected ((-1 * sin((2 * x))) * (2 * 1)), got", expr)
 	}
+}
+
+func TestTrimWithAdd(t *testing.T) {
+	x := symb.CreateVariable("x")
+	zero := symb.GetConstant(symb.ConstantZero)
+	sum := symb.NodeAdd(x, zero)
+	dsum := symb.NodeAdd(sum, sum)
+
+	original := dsum.String()
+	trimmed := dsum.Trim().String()
+
+	if original != "((x + 0) + (x + 0))" {
+		t.Error("Expected ((x + 0) + (x + 0)), got", original)
+	}
+	if trimmed != "(x + x)" {
+		t.Error("Expected (x + x), got", trimmed)
+	}
+}
+
+func TestTrimWithSub(t *testing.T) {
+	x := symb.CreateVariable("x")
+	zero := symb.GetConstant(symb.ConstantZero)
+	sub := symb.NodeSub(x, zero)
+	dsub := symb.NodeSub(sub, sub)
+
+	original := dsub.String()
+	trimmed := dsub.Trim().String()
+
+	if original != "((x - 0) - (x - 0))" {
+		t.Error("Expected ((x - 0) - (x - 0)), got", original)
+	}
+	if trimmed != "(x - x)" {
+		t.Error("Expected (x - x), got", trimmed)
+	}
+}
+
+func TestTrimWithMultiply(t *testing.T) {
+	x := symb.CreateVariable("x")
+	zero := symb.GetConstant(symb.ConstantZero)
+	one := symb.GetConstant(symb.ConstantOne)
+
+	timesZero := symb.NodeMultiply(x, zero)
+	timesOne := symb.NodeMultiply(x, one)
+	timesZeroTrimmed := timesZero.Trim()
+	timesOneTrimmed := timesOne.Trim()
+
+	tzStr := timesZero.String()
+	tzTrm := timesZeroTrimmed.String()
+	if tzStr != "(x * 0)" {
+		t.Error("Expected (x * 0), got", tzStr)
+	}
+	if tzTrm != "0" {
+		t.Error("Expected 0, got", tzTrm)
+	}
+
+	t1Str := timesOne.String()
+	t1Trm := timesOneTrimmed.String()
+	if t1Str != "(x * 1)" {
+		t.Error("Expected (x * 1), got", tzStr)
+	}
+	if t1Trm != "x" {
+		t.Error("Expected x, got", tzTrm)
+	}
+}
+
+func TestTrimWithDivide(t *testing.T) {
+	x := symb.CreateVariable("x")
+	zero := symb.GetConstant(symb.ConstantZero)
+	one := symb.GetConstant(symb.ConstantOne)
+
+	// Divide by one:
+	divByOne := symb.NodeDivide(x, one)
+	divByOneTrim := divByOne.Trim()
+	dv1Str := divByOne.String()
+	dv1Trm := divByOneTrim.String()
+	if dv1Str != "(x / 1)" {
+		t.Error("Expected (x / 1), got", dv1Str)
+	}
+	if dv1Trm != "x" {
+		t.Error("Expected x, got", dv1Trm)
+	}
+
+	// Zero at numerator:
+	numZero := symb.NodeDivide(zero, x)
+	numZeroTrim := numZero.Trim()
+	zStr := numZero.String()
+	zTrm := numZeroTrim.String()
+	if zStr != "(0 / x)" {
+		t.Error("Expected (0 / x), got", zStr)
+	}
+	if zTrm != "0" {
+		t.Error("Expected x, got", zTrm)
+	}
+
+	// Division by zero panic:
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("Expected trim with division by zero detected to panic.")
+		}
+	}()
+	divZero := symb.NodeDivide(x, zero)
+	divZero.Trim()
 }

@@ -20,6 +20,11 @@ func (this *Variable) FunctionOf(v *Variable) bool {
 	return this.name == (*v).name
 }
 
+// Returns false because it is variable
+func (v *Variable) IsConstant() bool {
+	return false
+}
+
 // Returns 1.0 if FunctionOf is true 0.0 otherwise
 func (this *Variable) Diff(v *Variable) Evaluatable {
 	if this.FunctionOf(v) {
@@ -27,4 +32,8 @@ func (this *Variable) Diff(v *Variable) Evaluatable {
 	} else {
 		return GetConstant(ConstantZero)
 	}
+}
+
+func (v *Variable) Trim() Evaluatable {
+	return v
 }

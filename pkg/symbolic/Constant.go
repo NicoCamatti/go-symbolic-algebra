@@ -33,7 +33,7 @@ func GetConstant(c string) *Constant {
 	panic("Unknown constant")
 }
 
-// Get a constant from the given name and value
+// Get a constant from the given value
 func GetConstantValue(v float64) (rConst *Constant) {
 	name := fmt.Sprintf("%g", v) // Creates a name for this constant v
 	defer func() {
@@ -66,6 +66,11 @@ func (c *Constant) FunctionOf(v *Variable) bool {
 	return false
 }
 
+// Automatically returns true when it is constant
+func (c *Constant) IsConstant() bool {
+	return true
+}
+
 // Automatically returns 0.0 if got to constant leaf node
 func (c *Constant) Diff(v *Variable) Evaluatable {
 	return GetConstant(ConstantZero)
@@ -73,4 +78,8 @@ func (c *Constant) Diff(v *Variable) Evaluatable {
 
 func (c *Constant) String() string {
 	return c.name
+}
+
+func (c *Constant) Trim() Evaluatable {
+	return c
 }

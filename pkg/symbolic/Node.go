@@ -19,3 +19,17 @@ func (n *node) FunctionOf(v *Variable) bool {
 		return false
 	}
 }
+
+func (n *node) IsConstant() bool {
+	leftIsNil := n.left == nil
+	rightIsNil := n.right == nil
+	if !leftIsNil && !rightIsNil {
+		return n.left.IsConstant() && n.right.IsConstant()
+	} else if !leftIsNil {
+		return n.left.IsConstant()
+	} else if !rightIsNil {
+		return n.right.IsConstant()
+	} else {
+		return true
+	}
+}

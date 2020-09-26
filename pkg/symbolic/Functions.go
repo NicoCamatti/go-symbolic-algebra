@@ -73,6 +73,10 @@ func (p *pow) String() string {
 	return "(" + p.left.String() + " ^ " + p.right.String() + ")"
 }
 
+func (p *pow) Trim() Evaluatable {
+	return nil // TODO implement
+}
+
 type ln struct {
 	node
 }
@@ -106,6 +110,10 @@ func (l *ln) String() string {
 	return "ln(" + l.left.String() + ")"
 }
 
+func (l *ln) Trim() Evaluatable {
+	return nil // TODO implement
+}
+
 type sin struct {
 	node
 }
@@ -133,6 +141,10 @@ func (s *sin) Diff(v *Variable) Evaluatable {
 
 func (s *sin) String() string {
 	return "sin(" + s.left.String() + ")"
+}
+
+func (s *sin) Trim() Evaluatable {
+	return nil // TODO implement
 }
 
 type cos struct {
@@ -165,4 +177,8 @@ func (c *cos) Diff(v *Variable) Evaluatable {
 
 func (c *cos) String() string {
 	return "cos(" + c.left.String() + ")"
+}
+
+func (c *cos) Trim() Evaluatable {
+	return nil // TODO implement
 }

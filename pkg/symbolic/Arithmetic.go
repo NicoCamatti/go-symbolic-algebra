@@ -33,6 +33,35 @@ func (a *add) String() string {
 	return "(" + a.left.String() + " + " + a.right.String() + ")"
 }
 
+func (a *add) Trim() Evaluatable {
+	// Drop a sum with zero
+	leftTrim := a.left.Trim()
+	rightTrim := a.right.Trim()
+
+	dropLeft := false
+	if leftTrim.IsConstant() {
+		if leftTrim.Evaluate() == 0.0 {
+			dropLeft = true
+		}
+	}
+	dropRight := false
+	if rightTrim.IsConstant() {
+		if rightTrim.Evaluate() == 0.0 {
+			dropRight = true
+		}
+	}
+
+	if dropLeft && dropRight {
+		return GetConstant(ConstantZero)
+	} else if dropLeft {
+		return rightTrim
+	} else if dropRight {
+		return leftTrim
+	} else {
+		return NodeAdd(leftTrim, rightTrim)
+	}
+}
+
 // sub operation node
 type sub struct {
 	node
@@ -64,6 +93,35 @@ func (s *sub) Diff(v *Variable) Evaluatable {
 
 func (s *sub) String() string {
 	return "(" + s.left.String() + " - " + s.right.String() + ")"
+}
+
+func (s *sub) Trim() Evaluatable {
+	// Drop a sub with zero
+	leftTrim := s.left.Trim()
+	rightTrim := s.right.Trim()
+
+	dropLeft := false
+	if leftTrim.IsConstant() {
+		if leftTrim.Evaluate() == 0.0 {
+			dropLeft = true
+		}
+	}
+	dropRight := false
+	if rightTrim.IsConstant() {
+		if rightTrim.Evaluate() == 0.0 {
+			dropRight = true
+		}
+	}
+
+	if dropLeft && dropRight {
+		return GetConstant(ConstantZero)
+	} else if dropLeft {
+		return rightTrim
+	} else if dropRight {
+		return leftTrim
+	} else {
+		return NodeSub(leftTrim, rightTrim)
+	}
 }
 
 // multiply operation node
@@ -100,6 +158,46 @@ func (m *multiply) Diff(v *Variable) Evaluatable {
 
 func (m *multiply) String() string {
 	return "(" + m.left.String() + " * " + m.right.String() + ")"
+}
+
+func (m *multiply) Trim() Evaluatable {
+	// Kills a multiply with zero
+	// Simplifies a multiply with one
+	leftTrim := m.left.Trim()
+	rightTrim := m.right.Trim()
+
+	// Boolean flags:
+	leftIsZero := false
+	rightIsZero := false
+	leftIsOne := false
+	rightIsOne := false
+	if leftTrim.IsConstant() {
+		cValue := leftTrim.Evaluate()
+		if cValue == 0.0 {
+			leftIsZero = true
+		} else if cValue == 1.0 {
+			leftIsOne = true
+		}
+	}
+	if rightTrim.IsConstant() {
+		cValue := rightTrim.Evaluate()
+		if cValue == 0.0 {
+			rightIsZero = true
+		} else if cValue == 1.0 {
+			rightIsOne = true
+		}
+	}
+
+	// Do the operations:
+	if leftIsZero || rightIsZero {
+		return GetConstant(ConstantZero)
+	} else if leftIsOne {
+		return rightTrim
+	} else if rightIsOne {
+		return leftTrim
+	} else {
+		return NodeMultiply(leftTrim, rightTrim)
+	}
 }
 
 // divide operation Node
@@ -150,4 +248,42 @@ func (d *divide) Diff(v *Variable) Evaluatable {
 
 func (d *divide) String() string {
 	return "(" + d.left.String() + " / " + d.right.String() + ")"
+}
+
+func (d *divide) Trim() Evaluatable {
+	// Kills a numerator equal to zero
+	// Simplify a one denominator
+	// Panic division by zero
+	leftTrim := d.left.Trim()
+	rightTrim := d.right.Trim()
+
+	// Boolean flags:
+	numIsZero := false
+	denIsZero := false
+	denIsOne := false
+	if leftTrim.IsConstant() {
+		cValue := leftTrim.Evaluate()
+		if cValue == 0.0 {
+			numIsZero = true
+		}
+	}
+	if rightTrim.IsConstant() {
+		cValue := rightTrim.Evaluate()
+		if cValue == 0.0 {
+			denIsZero = true
+		} else if cValue == 1.0 {
+			denIsOne = true
+		}
+	}
+
+	// Do the operations:
+	if denIsZero {
+		panic("Expression contains division by zero!")
+	} else if numIsZero {
+		return GetConstant(ConstantZero)
+	} else if denIsOne {
+		return leftTrim
+	} else {
+		return NodeDivide(leftTrim, rightTrim)
+	}
 }

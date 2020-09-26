@@ -9,5 +9,7 @@ type Evaluatable interface {
 	fmt.Stringer
 	Evaluate() float64
 	FunctionOf(v *Variable) bool
+	IsConstant() bool
 	Diff(v *Variable) Evaluatable
+	Trim() Evaluatable
 }

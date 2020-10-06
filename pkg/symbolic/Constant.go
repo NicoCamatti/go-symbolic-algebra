@@ -25,7 +25,6 @@ var constantPool = map[string]Constant{
 
 // Gets a constant from the given input string. Only supports the already defined const strings, otherwise panic
 func GetConstant(c string) *Constant {
-	var rConst Constant
 	rConst, ok := constantPool[c]
 	if ok {
 		return &rConst
@@ -34,16 +33,15 @@ func GetConstant(c string) *Constant {
 }
 
 // Get a constant from the given value
-func GetConstantValue(v float64) (rConst *Constant) {
+func GetConstantValue(v float64) (rCnt *Constant) {
 	name := fmt.Sprintf("%g", v) // Creates a name for this constant v
-	defer func() {
-		if r := recover(); r != nil {
-			// If panic add the new constant to the pool and return it:
-			rConst = &Constant{name: name, value: v}
-			constantPool[name] = *rConst
-		}
-	}()
-	rConst = GetConstant(name) // May panic if not mapped constant
+	if cnt, ok := constantPool[name]; ok {
+		rCnt = &cnt
+	} else {
+		addCnt := Constant{name: name, value: v}
+		constantPool[name] = addCnt
+		rCnt = &addCnt
+	}
 	return
 }
 
